@@ -1,0 +1,5 @@
+marimo
+pandas
+openpyxl
+Ipython
+xlrd
