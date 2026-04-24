@@ -88,7 +88,7 @@ def _(mo):
 
 @app.cell
 def _(file_path, pd):
-    eia_923_2025 = pd.read_excel(file_path + r"\data\eia-923\2025\EIA923_Schedules_2_3_4_5_M_12_2025_20FEB2026.xlsx", sheet_name = 6, header = 4)
+    # eia_923_2025 = pd.read_excel(file_path + r"\data\eia-923\2025\EIA923_Schedules_2_3_4_5_M_12_2025_20FEB2026.xlsx", sheet_name = 6, header = 4)
     eia_923_2024 = pd.read_excel(file_path + r"\data\eia-923\2024\EIA923_Schedules_2_3_4_5_M_12_2024_Final.xlsx", sheet_name = 8, header = 5)
     eia_923_2023 = pd.read_excel(file_path + r"\data\eia-923\2023\EIA923_Schedules_2_3_4_5_M_12_2023_Final_Revision.xlsx", sheet_name = 8, header = 5)
     eia_923_2022 = pd.read_excel(file_path + r"\data\eia-923\2022\EIA923_Schedules_2_3_4_5_M_12_2022_Final_Revision.xlsx", sheet_name = 7, header = 5) 
@@ -119,10 +119,25 @@ def _(file_path, pd):
     eia_860_2015 = pd.read_excel(file_path + r"\data\eia-860\2015\3_1_Generator_Y2015.xlsx", sheet_name = 0, header = 1)
     eia_860_2014 = pd.read_excel(file_path + r"\data\eia-860\2014\3_1_Generator_Y2014.xlsx", sheet_name = 0, header = 1)
     eia_860_2013 = pd.read_excel(file_path + r"\data\eia-860\2013\3_1_Generator_Y2013.xlsx", sheet_name = 0, header = 1)
+    eia_860_2012 = pd.read_excel(file_path + r"\data\eia-860\2012\GeneratorY2012.xlsx", sheet_name = 0, header = 1)
+    eia_860_2011 = pd.read_excel(file_path + r"\data\eia-860\2011\GeneratorY2011.xlsx", sheet_name = 0, header = 1)
+    eia_860_2010 = pd.read_excel(file_path + r"\data\eia-860\2010\GeneratorsY2010.xls", sheet_name = 0, header = 0) ## heading tables change
+    eia_860_2009 = pd.read_excel(file_path + r"\data\eia-860\2009\GeneratorY09.xls", sheet_name = 0, header = 0)
+    eia_860_2008 = pd.read_excel(file_path + r"\data\eia-860\2008\GenY08.xls", sheet_name = 0, header = 0)
+    # eia_860_2007 = pd.read_excel(file_path + r"\data\eia-860\2007\GenY07.xls", sheet_name = 0, header = 0)
+    # eia_860_2006 = pd.read_excel(file_path + r"\data\eia-860\2006\GenY06.xls", sheet_name = 0, header = 0)
+    # eia_860_2005 = pd.read_excel(file_path + r"\data\eia-860\2005\GenY05.xls", sheet_name = 0, header = 0)
+    # eia_860_2004 = pd.read_excel(file_path + r"\data\eia-860\2004\GenY04.xls", sheet_name = 0, header = 0)
 
 
 
     return (
+        eia_860_2008,
+        eia_860_2009,
+        eia_860_2010,
+        eia_860_2011,
+        eia_860_2012,
+        eia_860_2013,
         eia_860_2014,
         eia_860_2015,
         eia_860_2016,
@@ -151,8 +166,20 @@ def _(file_path, pd):
         eia_923_2022,
         eia_923_2023,
         eia_923_2024,
-        eia_923_2025,
     )
+
+
+@app.cell
+def _(clean_columns, eia_860_2010):
+    g = clean_columns(eia_860_2010)
+    g = g.rename(columns={
+        "generator_id": "generator id",
+        "plant_code": "plant code",
+        "nameplate": "nameplate capacity (mw)"
+
+        })
+    g
+    return
 
 
 @app.cell(hide_code=True)
@@ -177,8 +204,6 @@ def _():
         "net generation year to date"
     )
 
-
-
     def clean_columns(df):
         df.columns = (
             df.columns
@@ -191,16 +216,26 @@ def _():
 
     def process_860(df, year):
         df = clean_columns(df)
+        if year <= 2011:
+            if year <= 2008:
+                df = df.rename(columns={
+                    "plntcode": "plant code",
+                    "gencode": "generator id",
+                    "nameplate": "nameplate capacity (mw)"
+                })
+            else:
+                df = df.rename(columns={
+                    "generator_id": "generator id",
+                    "plant_code": "plant code",
+                    "nameplate": "nameplate capacity (mw)"
+                })
         df = df.loc[:, df.columns.isin(important_columns_860)].copy()
         df = df.rename(columns={
             "plant code": "plant id",
             "nameplate capacity (mw)": ("nameplate capacity (mw) " + str(year))
         })
-
-        #df['plant id'] = df['plant id'].astype(int)
         df['generator id'] = df['generator id'].astype(str)
         df = df.drop_duplicates(subset=["plant id", "generator id"])
-
         return df
 
     def process_923(df, year):
@@ -212,21 +247,24 @@ def _():
         df['generator id'] = df['generator id'].astype(str)
         df = df.drop_duplicates(subset=["plant id", "generator id"])
         return df
-
-
-
-
+    
     def merge_and_calculate(df_860, df_923, year):
         df = df_860.merge(df_923, on = ("plant id", "generator id"))
         df['capacity factor ' + str(year)] = df['net generation year to date ' + str(year)] / (df["nameplate capacity (mw) " +str(year)] * 8760)
         return df
 
 
-    return merge_and_calculate, process_860, process_923
+    return clean_columns, merge_and_calculate, process_860, process_923
 
 
 @app.cell
 def _(
+    eia_860_2008,
+    eia_860_2009,
+    eia_860_2010,
+    eia_860_2011,
+    eia_860_2012,
+    eia_860_2013,
     eia_860_2014,
     eia_860_2015,
     eia_860_2016,
@@ -255,7 +293,6 @@ def _(
     eia_923_2022,
     eia_923_2023,
     eia_923_2024,
-    eia_923_2025,
     merge_and_calculate,
     pd,
     process_860,
@@ -273,11 +310,17 @@ def _(
         2017: eia_860_2017,
         2016: eia_860_2016,
         2015: eia_860_2015,
-        2014: eia_860_2014
+        2014: eia_860_2014,
+        2013: eia_860_2013,
+        2012: eia_860_2012,
+        2011: eia_860_2011,
+        2010: eia_860_2010,
+        2009: eia_860_2009,
+        2008: eia_860_2008
     }
 
     eia_923_years = {
-        2025: eia_923_2025,
+        #2025: eia_923_2025,
         2024: eia_923_2024,
         2023: eia_923_2023,
         2022: eia_923_2022,
@@ -294,10 +337,8 @@ def _(
         2011: eia_923_2011,
         2010: eia_923_2010,
         2009: eia_923_2009,
-        2008: eia_923_2008,
+        2008: eia_923_2008
     }
-
-
 
 
     eia_860_key = {
@@ -349,7 +390,13 @@ def _(
         ),
         eia_key.values()
     )
-    return (eia_860_years,)
+    return eia_860_years, eia_wide
+
+
+@app.cell
+def _(eia_wide):
+    eia_wide
+    return
 
 
 @app.cell

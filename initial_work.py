@@ -173,7 +173,16 @@ def _(file_path, pd):
     eia_923_2021_key_columns = eia_923_2021.loc[:, eia_923_2021.columns.isin(important_columns)]
     eia_923_2020_key_columns = eia_923_2020.loc[:, eia_923_2020.columns.isin(important_columns)]
 
-    return eia_923_2020_key_columns, important_columns
+    return (
+        eia_923_2020,
+        eia_923_2020_key_columns,
+        eia_923_2021,
+        eia_923_2022,
+        eia_923_2023,
+        eia_923_2024,
+        eia_923_2025,
+        important_columns,
+    )
 
 
 @app.cell
@@ -242,7 +251,15 @@ def _(file_path, important_columns, pd):
     eia_923_2015_key_columns = eia_923_2015.loc[:, eia_923_2015.columns.isin(important_columns)]
     eia_923_2014_key_columns = eia_923_2014.loc[:, eia_923_2014.columns.isin(important_columns)]
 
-    return (eia_923_2014_key_columns,)
+    return (
+        eia_923_2014,
+        eia_923_2014_key_columns,
+        eia_923_2015,
+        eia_923_2016,
+        eia_923_2017,
+        eia_923_2018,
+        eia_923_2019,
+    )
 
 
 @app.cell
@@ -311,11 +328,219 @@ def _(file_path, important_columns, pd):
     eia_923_2009_key_columns = eia_923_2009.loc[:, eia_923_2009.columns.isin(important_columns)]
     eia_923_2008_key_columns = eia_923_2008.loc[:, eia_923_2008.columns.isin(important_columns)]
 
-    return
+    return (
+        eia_923_2008,
+        eia_923_2009,
+        eia_923_2010,
+        eia_923_2011,
+        eia_923_2012,
+        eia_923_2013,
+    )
 
 
 @app.cell
 def _():
+    # eia_923_key = {
+    #     2008: eia_923_2008_key,
+    #     2009: eia_923_2009_key,
+    #     2010: eia_923_2010_key,
+    #     2011: eia_923_2011_key,
+    #     2012: eia_923_2012_key,
+    #     2013: eia_923_2013_key,
+    #     2014: eia_923_2014_key,
+    #     2015: eia_923_2015_key,
+    #     2016: eia_923_2016_key,
+    #     2017: eia_923_2017_key,
+    #     2018: eia_923_2018_key,
+    #     2019: eia_923_2019_key,
+    #     2020: eia_923_2020_key,
+    #     2021: eia_923_2021_key,
+    #     2022: eia_923_2022_key,
+    #     2023: eia_923_2023_key,
+    #     2024: eia_923_2024_key,
+    #     2025: eia_923_2025_key,
+    # }
+    return
+
+
+@app.cell
+def _(
+    clean_columns,
+    eia_923_2008,
+    eia_923_2009,
+    eia_923_2010,
+    eia_923_2011,
+    eia_923_2012,
+    eia_923_2013,
+    eia_923_2014,
+    eia_923_2015,
+    eia_923_2016,
+    eia_923_2017,
+    eia_923_2018,
+    eia_923_2019,
+    eia_923_2020,
+    eia_923_2021,
+    eia_923_2022,
+    eia_923_2023,
+    eia_923_2024,
+    eia_923_2025,
+):
+    eia_923_years = {
+        2025: eia_923_2025,
+        2024: eia_923_2024,
+        2023: eia_923_2023,
+        2022: eia_923_2022,
+        2021: eia_923_2021,
+        2020: eia_923_2020,
+        2019: eia_923_2019,
+        2018: eia_923_2018,
+        2017: eia_923_2017,
+        2016: eia_923_2016,
+        2015: eia_923_2015,
+        2014: eia_923_2014,
+        2013: eia_923_2013,
+        2012: eia_923_2012,
+        2011: eia_923_2011,
+        2010: eia_923_2010,
+        2009: eia_923_2009,
+        2008: eia_923_2008,
+    }
+
+
+
+    for _year in eia_923_years:
+        eia_923_years[_year] = clean_columns(eia_923_years[_year])
+
+    important_columns_923 = (
+        "plant id",
+        "plant name",
+        "operator name",
+        "operator id",
+        "generator id",
+        "net generation year to date"
+    )
+
+    eia_923_key_columns = {}
+
+
+    for _year, _df in eia_923_years.items():
+        eia_923_key_columns[_year] = _df.loc[:, _df.columns.isin(important_columns_923)]
+
+    eia_923_2025_key_columns = eia_923_2025.loc[:, eia_923_2025.columns.isin(important_columns_923)]
+    eia_923_2024_key_columns = eia_923_2024.loc[:, eia_923_2024.columns.isin(important_columns_923)]
+    eia_923_2023_key_columns = eia_923_2023.loc[:, eia_923_2023.columns.isin(important_columns_923)]
+    eia_923_2022_key_columns = eia_923_2022.loc[:, eia_923_2022.columns.isin(important_columns_923)]
+    eia_923_2021_key_columns = eia_923_2021.loc[:, eia_923_2021.columns.isin(important_columns_923)]
+    eia_923_2020_key_columns = eia_923_2020.loc[:, eia_923_2020.columns.isin(important_columns_923)]
+    eia_923_2019_key_columns = eia_923_2019.loc[:, eia_923_2019.columns.isin(important_columns_923)]
+    eia_923_2018_key_columns = eia_923_2018.loc[:, eia_923_2018.columns.isin(important_columns_923)]
+    eia_923_2017_key_columns = eia_923_2017.loc[:, eia_923_2017.columns.isin(important_columns_923)]
+    eia_923_2016_key_columns = eia_923_2016.loc[:, eia_923_2016.columns.isin(important_columns_923)]
+    eia_923_2015_key_columns = eia_923_2015.loc[:, eia_923_2015.columns.isin(important_columns_923)]
+    eia_923_2014_key_columns = eia_923_2014.loc[:, eia_923_2014.columns.isin(important_columns_923)]
+    eia_923_2013_key_columns = eia_923_2013.loc[:, eia_923_2013.columns.isin(important_columns_923)]
+    eia_923_2012_key_columns = eia_923_2012.loc[:, eia_923_2012.columns.isin(important_columns_923)]
+    eia_923_2011_key_columns = eia_923_2011.loc[:, eia_923_2011.columns.isin(important_columns_923)]
+    eia_923_2010_key_columns = eia_923_2010.loc[:, eia_923_2010.columns.isin(important_columns_923)]
+    eia_923_2009_key_columns = eia_923_2009.loc[:, eia_923_2009.columns.isin(important_columns_923)]
+    eia_923_2008_key_columns = eia_923_2008.loc[:, eia_923_2008.columns.isin(important_columns_923)]
+
+    eia_923_2025_key_columns.rename(columns = {"net generation year to date": "net generation to data 2025"})
+    eia_923_2024_key_columns.rename(columns = {"net generation year to date": "net generation to data 2024"})
+    eia_923_2023_key_columns.rename(columns = {"net generation year to date": "net generation to data 2023"})
+    eia_923_2022_key_columns.rename(columns = {"net generation year to date": "net generation to data 2022"})
+    eia_923_2021_key_columns.rename(columns = {"net generation year to date": "net generation to data 2021"})
+    eia_923_2020_key_columns.rename(columns = {"net generation year to date": "net generation to data 2020"})
+    eia_923_2019_key_columns.rename(columns = {"net generation year to date": "net generation to data 2019"})
+    eia_923_2018_key_columns.rename(columns = {"net generation year to date": "net generation to data 2018"})
+    eia_923_2017_key_columns.rename(columns = {"net generation year to date": "net generation to data 2017"})
+    eia_923_2016_key_columns.rename(columns = {"net generation year to date": "net generation to data 2016"})
+    eia_923_2015_key_columns.rename(columns = {"net generation year to date": "net generation to data 2015"})
+    eia_923_2014_key_columns.rename(columns = {"net generation year to date": "net generation to data 2014"})
+    eia_923_2013_key_columns.rename(columns = {"net generation year to date": "net generation to data 2013"})
+    eia_923_2012_key_columns.rename(columns = {"net generation year to date": "net generation to data 2012"})
+    eia_923_2011_key_columns.rename(columns = {"net generation year to date": "net generation to data 2011"})
+    eia_923_2010_key_columns.rename(columns = {"net generation year to date": "net generation to data 2010"})
+    eia_923_2009_key_columns.rename(columns = {"net generation year to date": "net generation to data 2009"})
+    eia_923_2008_key_columns.rename(columns = {"net generation year to date": "net generation to data 2008"})
+
+    return eia_923_2014_key_columns, eia_923_2020_key_columns
+
+
+@app.cell
+def _(
+    clean_columns,
+    eia_860_2014,
+    eia_860_2015,
+    eia_860_2016,
+    eia_860_2017,
+    eia_860_2018,
+    eia_860_2019,
+    eia_860_2020,
+    eia_860_2021,
+    eia_860_2022,
+    eia_860_2023,
+    eia_860_2024,
+):
+    eia_860_years = {
+        # 2025: eia_860_2025,
+        2024: eia_860_2024,
+        2023: eia_860_2023,
+        2022: eia_860_2022,
+        2021: eia_860_2021,
+        2020: eia_860_2020,
+        2019: eia_860_2019,
+        2018: eia_860_2018,
+        2017: eia_860_2017,
+        2016: eia_860_2016,
+        2015: eia_860_2015,
+        2014: eia_860_2014#,
+        # 2013: eia_923_2013,
+        # 2012: eia_923_2012,
+        # 2011: eia_923_2011,
+        # 2010: eia_923_2010,
+        # 2009: eia_923_2009,
+        # 2008: eia_923_2008,
+    }
+
+    for _year in eia_860_years:
+        eia_860_years[_year] = clean_columns(eia_860_years[_year])
+
+    important_columns_860 = (
+        "plant code",
+        "plant name",
+        "generator id",
+        "utility name",
+        "utility id",
+        "nameplate capacity (mw)"
+    )
+
+
+    eia_860_2024_key_columns = eia_860_2024.loc[:, eia_860_2024.columns.isin(important_columns_860)]
+    eia_860_2023_key_columns = eia_860_2023.loc[:, eia_860_2023.columns.isin(important_columns_860)]
+    eia_860_2022_key_columns = eia_860_2022.loc[:, eia_860_2022.columns.isin(important_columns_860)]
+    eia_860_2021_key_columns = eia_860_2021.loc[:, eia_860_2021.columns.isin(important_columns_860)]
+    eia_860_2020_key_columns = eia_860_2020.loc[:, eia_860_2020.columns.isin(important_columns_860)]
+    eia_860_2019_key_columns = eia_860_2019.loc[:, eia_860_2019.columns.isin(important_columns_860)]
+    eia_860_2018_key_columns = eia_860_2018.loc[:, eia_860_2018.columns.isin(important_columns_860)]
+    eia_860_2017_key_columns = eia_860_2017.loc[:, eia_860_2017.columns.isin(important_columns_860)]
+    eia_860_2016_key_columns = eia_860_2016.loc[:, eia_860_2016.columns.isin(important_columns_860)]
+    eia_860_2015_key_columns = eia_860_2015.loc[:, eia_860_2015.columns.isin(important_columns_860)]
+    eia_860_2014_key_columns = eia_860_2014.loc[:, eia_860_2014.columns.isin(important_columns_860)]
+
+
+
+    eia_860_2024_key_columns.rename(columns = {"nameplate capacity (mw)": "nameplate capacity (mw) 2024", "plant code": "plant id"}, inplace = True)
+    eia_860_2023_key_columns.rename(columns = {"nameplate capacity (mw)": "nameplate capacity (mw) 2023", "plant code": "plant id"}, inplace = True)
+    eia_860_2022_key_columns.rename(columns = {"nameplate capacity (mw)": "nameplate capacity (mw) 2022", "plant code": "plant id"}, inplace = True)
+    eia_860_2021_key_columns.rename(columns = {"nameplate capacity (mw)": "nameplate capacity (mw) 2021", "plant code": "plant id"}, inplace = True)
+    eia_860_2020_key_columns.rename(columns = {"nameplate capacity (mw)": "nameplate capacity (mw) 2020", "plant code": "plant id"}, inplace = True)
+    eia_860_2019_key_columns.rename(columns = {"nameplate capacity (mw)": "nameplate capacity (mw) 2019", "plant code": "plant id"}, inplace = True) ## utility id maybe an issue due to type
+    eia_860_2018_key_columns.rename(columns = {"nameplate capacity (mw)": "nameplate capacity (mw) 2018", "plant code": "plant id"}, inplace = True)
+    eia_860_2017_key_columns.rename(columns = {"nameplate capacity (mw)": "nameplate capacity (mw) 2017", "plant code": "plant id"}, inplace = True)
+    eia_860_2016_key_columns.rename(columns = {"nameplate capacity (mw)": "nameplate capacity (mw) 2016", "plant code": "plant id"}, inplace = True)
+    eia_860_2015_key_columns.rename(columns = {"nameplate capacity (mw)": "nameplate capacity (mw) 2015", "plant code": "plant id"}, inplace = True)
+    eia_860_2014_key_columns.rename(columns = {"nameplate capacity (mw)": "nameplate capacity (mw) 2014", "plant code": "plant id"}, inplace = True)## utility id maybe an issue due to type
     return
 
 
